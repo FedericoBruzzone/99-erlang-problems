@@ -14,6 +14,8 @@ $ apt install erlang
 $ pacman install erlang
 ```
 
+Compile and import erlang file into shell: `c(<filename>)`.
+
 ## Contributing
 
 Contributions to this project are welcome! If you have any suggestions, improvements, or bug fixes, feel free to submit a pull request.
@@ -31,4 +33,5 @@ If you have any questions or suggestions regarding this repository, please don't
 
 # Links
 
+- [erlang-99](https://purijatin.github.io/newsletters/erlang-99/)
 
