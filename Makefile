@@ -16,7 +16,7 @@ $(PROGRAMS): %: %.erl
 	$(ERL) -noshell -run $@ start -run init stop
 
 clean:
-	rm -f *.dump *.beam *.o $(PROGRAMS)
+	rm -f *.crashdump *.dump *.beam *.o $(PROGRAMS)
 
 # PHONY targets (these targets don't represent files)
 .PHONY: all clean
