@@ -14,7 +14,17 @@ $ apt install erlang
 $ pacman install erlang
 ```
 
+# Generic Information
+
 Compile and import erlang file into shell: `c(<filename>)`.
+
+Comment using pre-processor:
+
+```erlang
+-ifdef(comment).
+  ...
+-endif.
+```
 
 ## Contributing
 

@@ -11,7 +11,7 @@ all: clean $(PROGRAMS)
 
 # Compile and execute each program
 $(PROGRAMS): %: %.erl
-	echo "Compiling and executing $<"
+	@echo "Compiling and executing $<"
 	$(ERLC) $(ERLFLAGS) $<
 	$(ERL) -noshell -run $@ start -run init stop
 
