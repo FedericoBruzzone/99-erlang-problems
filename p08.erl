@@ -17,14 +17,11 @@
 % compress([F, S | T]) ->
 %   [F | compress([S | T])].
 
-compress([]) ->
-  [];
-compress([H]) ->
-  [H];
 compress([H, H | T]) ->
   compress([H | T]);
 compress([F, S | T]) ->
-  [F | compress([S | T])].
+  [F | compress([S | T])];
+compress(L)-> L.
 
 start() ->
   io:format("~p~n", [compress([a, a, a, a, b, c, c, a, a, d, e, e, e, e])]).
