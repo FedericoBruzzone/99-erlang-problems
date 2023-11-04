@@ -6,10 +6,14 @@ ERL = erl
 ERLFLAGS =
 
 # List of program names (without the .erl extension)
-PROGRAMS = p01 p02 p03 p04 p05 p06
+PROGRAMS = p01 p02 p03 p04 p05 p06 p07
+LAST = $(shell echo $(PROGRAMS) | awk '{print $$NF}')
 
 # Targets
 all: clean $(PROGRAMS)
+
+# Compile and execute last program
+last: $(LAST)
 
 # Compile and execute each program
 $(PROGRAMS): %: %.erl
