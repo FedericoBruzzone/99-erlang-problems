@@ -6,7 +6,7 @@ ERL = erl
 ERLFLAGS =
 
 # List of program names (without the .erl extension)
-PROGRAMS = p01 p02 p03 p04
+PROGRAMS = p01 p02 p03 p04 p05
 
 # Targets
 all: clean $(PROGRAMS)
