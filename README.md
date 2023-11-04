@@ -3,7 +3,9 @@
 # How to compile
 
 ```Bash
-$ make all                        # Compile and run all files
+$ make all          # Compile and run all files
+$ make <filename>   # Compile and run a specific file
+$ make last         # Compile and run the last file (ascending order)
 $ make clean
 ```
 

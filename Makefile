@@ -12,6 +12,12 @@ LAST = $(shell echo $(PROGRAMS) | awk '{print $$NF}')
 # Targets
 all: clean $(PROGRAMS)
 
+# Compile and execure a program by name (given as an argument)
+run:
+	@echo "\e[32mCompiling and executing:\e[0m \e[1m$(P)\e[0m"
+	$(ERLC) $(ERLFLAGS) $(P).erl
+	$(ERL) -noshell -run $(P) start -run init stop
+
 # Compile and execute last program
 last: $(LAST)
 
@@ -25,5 +31,5 @@ clean:
 	rm -f *.crashdump *.dump *.beam *.o $(PROGRAMS)
 
 # PHONY targets (these targets don't represent files)
-.PHONY: all clean
+.PHONY: all clean run last $(PROGRAMS)
 
