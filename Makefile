@@ -1,17 +1,19 @@
+.SILENT:
+
 # Compiler options
 ERLC = erlc
 ERL = erl
 ERLFLAGS =
 
 # List of program names (without the .erl extension)
-PROGRAMS = p01 p02
+PROGRAMS = p01 p02 p03
 
 # Targets
 all: clean $(PROGRAMS)
 
 # Compile and execute each program
 $(PROGRAMS): %: %.erl
-	@echo "Compiling and executing $<"
+	@echo "\e[32mCompiling and executing:\e[0m \e[1m$<\e[0m"
 	$(ERLC) $(ERLFLAGS) $<
 	$(ERL) -noshell -run $@ start -run init stop
 
