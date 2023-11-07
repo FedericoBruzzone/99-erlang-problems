@@ -18,14 +18,20 @@ print(Term) ->
   ping_pong_server ! {print, Term},
   ok.
 
+stop() ->
+  exit(whereis(ping_pong_server), kill), % stop
+  unregister(ping_pong_server),
+  ok.
+
 loop() ->
   receive
     {print, Term} ->
       io:format("~p~n", [Term]),
+      loop();
+    stop ->
+      io:format("Server stopped~n"),
+      erlang:exit(normal);
+    Any ->
+      io:format("Unknown message: ~p~n", [Any]),
       loop()
   end.
-
-stop() ->
-  exit(whereis(ping_pong_server), kill),
-  unregister(ping_pong_server),
-  ok.
