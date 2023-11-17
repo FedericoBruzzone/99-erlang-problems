@@ -5,12 +5,18 @@
 -export([start/0, stop/0, store/3, lookup/2]).
 
 start() ->
-  PidServer = spawn(fun() -> loop() end),
-  register(kvs_s, PidServer).
+  MaybePidServer = whereis(kvs_s),
+  case MaybePidServer of
+    undefined ->
+      PidServer = spawn(fun() -> loop() end),
+      register(kvs_s, PidServer);
+    _ ->
+      MaybePidServer
+  end.
 
 stop() ->
-  unregister(kvs_s),
-  exit(whereis(kvs_s), kill).
+  exit(whereis(kvs_s), kill),
+  unregister(kvs_s).
 
 loop() ->
   receive
@@ -24,14 +30,12 @@ loop() ->
       loop()
   end.
 
+% Only for client side
 store(From, K, V) ->
   rpc(From, {store, K, V}).
 
 lookup(From, K) ->
   rpc(From, {lookup, K}).
 
-rpc(From, M) -> kvs_s ! {From, M}.
-% receive
-%   {kvs_s, R} ->
-%     R
-% end.
+rpc(From, M) ->
+  kvs_s ! {From, M}.
