@@ -1,50 +1,56 @@
+% erl -sname t1
+% > c(p5_couting_calls_server).
+% > p5_couting_calls_server:start().
+
 -module(p5_couting_calls_server).
 
 -export([start/0,
-         d1/0,
-         d2/1,
-         d1_rpc/1,
-         d2_rpc/2,
-         tot/0]).
+         stop/0,
+         d1/1,
+         d2/2,
+         tot/1]).
 
 start() ->
-  io:format("*** START"),
   MaybePidServer = whereis(cc_server),
   case MaybePidServer of
     undefined ->
       PidServer = spawn(fun() -> loop() end),
-      register(cc_server, PidServer);
-    _ ->
-      stop(), start()
+      register(cc_server, PidServer),
+      io:format("*** LOG: ~p is running at: ~p~n",
+                [cc_server, PidServer]);
+    _ -> stop(), start()
   end.
 
 stop() ->
-  exit(whereis(cc_server), kill),
+  PidServer = whereis(cc_server),
+  exit(PidServer, stopped),
   unregister(cc_server),
-  io:format("*** STOP").
+  io:format("*** LOG: ~p has been stopped, it was running at ~p~n",
+            [cc_server, PidServer]).
 
 loop() ->
-  io:format("*** LOOP started"),
   receive
     {From, {d1}} ->
-      put(d1, get(d1) + 1),
-      d1(),
-      From ! {cc_server, ok},
-      loop();
+      D1res = d1(), add_one_to(d1), From ! {cc_server, D1res}, loop();
     {From, {d2, X}} ->
-      put(d2, get(d2) + 1),
-      d2(X),
-      From ! {cc_server, ok},
-      loop()
+      D2res = d2(X), add_one_to(d2), From ! {cc_server, D2res}, loop();
+    {From, {tot}} ->
+      Totres = tot(), add_one_to(tot), From ! {cc_server, Totres}, loop()
   end.
 
-d1() -> io:format("*** d1~n").
-d2(X) -> io:format("*** d2 with X := ~p~n", [X]).
-d1_rpc(From) -> io:format("*** d1~n"), rpc(From, {d1}).
-d2_rpc(From, X) -> io:format("*** d2 with X := ~p~n", [X]), rpc(From, {d2, X}).
-rpc(From, M) -> cc_server ! {From, M}.
+add_one_to(K) ->
+  V = get(K),
+  case V of undefined -> put(K, 1); _ -> put(K, V + 1) end.
 
+d1() -> io:format("*** LOG: d1 has been called~n"), d1res.
+d2(X) -> io:format("*** LOG: d2 has been called with X = ~p~n", [X]), d2res.
 tot() ->
-  io:format("*** d1 := ~p~n", [get(d1)]),
-  io:format("*** d2 := ~p~n", [get(d2)]).
+  io:format("*** LOG: Tot d1 = ~p~n", [get(d1)]),
+  io:format("*** LOG: Tot d2 = ~p~n", [get(d2)]),
+  [{d1, get(d1)}, {d2, get(d2)}, {tot, get(tot)}].
+
+d1(From) -> rpc(From, {d1}).
+d2(From, X) -> rpc(From, {d2, X}).
+tot(From) -> rpc(From, {tot}).
+rpc(From, M) -> cc_server ! {From, M}.
 
