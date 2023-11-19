@@ -4,7 +4,7 @@
 start(N, L) -> spawn(N, remoting, create, [L]).
 
 create(L) ->
-    % group_leader(whereis(user),self()),
+    group_leader(whereis(user),self()),
     global:register_name(L, self()),
     io:format("I'm the actor «~p» created on ~p and registered as ~p~n", [self(), node(), L]),
     wait().
