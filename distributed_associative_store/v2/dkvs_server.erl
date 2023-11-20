@@ -42,3 +42,4 @@ loop() ->
       loop();
     Any -> io:format("*** LOG: Error, I got a message ~p~n", [Any])
   end.
+
