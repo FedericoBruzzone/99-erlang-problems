@@ -19,22 +19,16 @@ server_loop(Pfirst) ->
     {new, N} ->
       io:format("You asked for: ~p~n", [N]),
       case N > get(gn) of
-        true ->
-          rpc:call(amora@federicobruzzone, client, rpc_is_prime, [lists:concat([N, "is uncheckable, too big value"])]),
-          server_loop(Pfirst);
-        false ->
-          Pfirst ! {new, N},
-          server_loop(Pfirst)
+        true -> rpc:call(amora@federicobruzzone, client, rpc_is_prime, [lists:concat([N, "is uncheckable, too big value"])]);
+        false -> Pfirst ! {new, N}
       end;
-
     {res, R} ->
-      rpc:call(amora@federicobruzzone, client, rpc_is_prime, [R]),
-      server_loop(Pfirst);
-
+      rpc:call(amora@federicobruzzone, client, rpc_is_prime, [R]);
     close ->
       io:format("I'm closing ..."), unregister(server), unregister(first),
       exit(close)
-  end.
+  end,
+  server_loop(Pfirst).
 
 rpc_close() -> rpc(close).
 rpc_is_prime(N) -> rpc({new, N}).
