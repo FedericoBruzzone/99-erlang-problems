@@ -27,11 +27,11 @@ start(N) ->
   MaybeMasterPid = whereis(master),
   case MaybeMasterPid of
     undefined -> Master =
-		spawn(fun() ->
-	        process_flag(trap_exit, true),
-	        create_slaves(1, N + 1, [])
-	    end),
-        register(master, Master);
+      spawn(fun() ->
+              process_flag(trap_exit, true),
+              create_slaves(1, N + 1, [])
+            end),
+      register(master, Master);
     _ -> stop(), start(N)
   end.
 
@@ -51,21 +51,21 @@ slave_loop(_) -> ok.
 # Bowtie
 ```erlang
 start(N) ->
-	FirstLine = lists:map(fun(X) ->
-							  {X, spawn(fun() -> loop_first(X) end)}
-						  end,
-						  lists:map(fun(X) ->
-									    list_to_atom(lists:concat(["fl", X]))
-									end,
-									lists:seq(1, N))),
-	SecondLine = lists:map(fun(X) ->
-							   {X, spawn(fun() -> loop_second(X, FirstLine) end)}
-						   end,
-						   lists:map(fun(X) ->
-									    list_to_atom(lists:concat(["sl", X]))
-									end,
-									lists:seq(1, N))),
-	lists:foreach(fun({T, Pid}) -> register(T, Pid) end, SecondLine).
+  FirstLine = lists:map(fun(X) ->
+                          {X, spawn(fun() -> loop_first(X) end)}
+                        end,
+                        lists:map(fun(X) ->
+                                      list_to_atom(lists:concat(["fl", X]))
+                                  end,
+                                  lists:seq(1, N))),
+  SecondLine = lists:map(fun(X) ->
+                           {X, spawn(fun() -> loop_second(X, FirstLine) end)}
+                         end,
+                         lists:map(fun(X) ->
+                                     list_to_atom(lists:concat(["sl", X]))
+                                   end,
+                                   lists:seq(1, N))),
+  lists:foreach(fun({T, Pid}) -> register(T, Pid) end, SecondLine).
 
 loop_first(_) -> ok.
 loop_second(_, _) -> ok.
