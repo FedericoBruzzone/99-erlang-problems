@@ -1,7 +1,3 @@
-% ring:start(7, [fun(X) -> X*N end || N <- lists:seq(1, 7)]).
-% ring:send_message(1).
-% ring:send_message(1, 10).
-
 -module(ring).
 
 -export([
@@ -47,4 +43,8 @@ node_helper(Next, F, X, N) -> Next ! {sm1, F(X), N - 1}.
 send_message(X) -> whereis(handler) ! {sm1, X}.
 send_message(X, N) -> whereis(handler) ! {sm2, X, N}.
 stop() -> whereis(handler) ! stop.
+
+% ring:start(7, [fun(X) -> X*N end || N <- lists:seq(1, 7)]).
+% ring:send_message(1).
+% ring:send_message(1, 10).
 

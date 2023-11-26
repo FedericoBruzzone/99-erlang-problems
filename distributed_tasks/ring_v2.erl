@@ -12,8 +12,7 @@ start(N, L) ->
   register(first, First),
   put(n, N), ring_created.
 
-create_ring(N, N, [H]) ->
-  io:format("*** LOG: ~p (~p) --> ~p (~p) ~n", [N, self(), N - N + 1, whereis(first)]),
+create_ring(N, N, [H]) -> io:format("*** LOG: ~p (~p) --> ~p (~p) ~n", [N, self(), N - N + 1, whereis(first)]),
   loop_node(whereis(first), H);
 create_ring(X, N, [H | T]) ->
   Next = spawn_link(fun() -> create_ring(X + 1, N, T) end), io:format("*** LOG: ~p (~p) --> ~p (~p) ~n", [X, self(), X + 1, Next]),
@@ -22,17 +21,16 @@ create_ring(X, N, [H | T]) ->
 loop_node(Next, F) ->
   receive
     {sm1, X, N} -> node_helper(Next, F, X, N);
-    {sm2, X, M} -> io:format("*** LOG: HELLO"), node_helper(Next, F, X, M);
+    {sm2, X, M} -> node_helper(Next, F, X, M);
     stop -> exit(softly)
   end,
   loop_node(Next, F).
 
 node_helper(_, F, X, 0) -> io:format("~p~n", [F(X)]);
 node_helper(Next, F, X, N) ->
-  io:format("*** LOG: HELLO"),
   Next ! {sm1, F(X), N - 1}.
 
-send_message(X) -> whereis(first) ! {sm1, X}.
+send_message(X) -> whereis(first) ! {sm1, X, get(n)}.
 send_message(X, M) -> whereis(first) ! {sm2, X, get(n)*M}.
 stop() -> whereis(first) ! stop.
 
