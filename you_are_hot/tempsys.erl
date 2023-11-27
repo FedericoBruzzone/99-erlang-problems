@@ -43,7 +43,7 @@ loop_to_res(T, Fn) ->
 
 get_toPid(_, []) -> not_ok; % unreachable
 get_toPid(X, [{X, ToPid} | _]) -> ToPid;
-get_toPid(X, [_ | T] = PS) -> 
+get_toPid(X, [_ | T] = PS) ->
   io:format("~p ~p~n", [X, PS]),
   get_toPid(X, T).
 

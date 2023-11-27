@@ -18,8 +18,7 @@ master_loop(L, I, T) ->
   lists:foreach(fun({X, Slave}) -> 
                   Slave ! {perm, self(), I},
                   receive
-                    {perm_res, I, Res} -> 
-                      io:format("~p ", [Res])
+                    {perm_res, I, Res} -> io:format("~p ", [Res])
                   end
                 end, L),
   io:format("~n"),
