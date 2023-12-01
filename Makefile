@@ -14,7 +14,7 @@ all: clean $(PROGRAMS)
 
 # Compile and execure a program by name (given as an argument)
 run:
-	@echo "\e[32mCompiling and executing:\e[0m \e[1m$(P)\e[0m"
+	@echo "\033[32mCompiling and executing:\033[0m \033[1m$(P)\033[0m"
 	$(ERLC) $(ERLFLAGS) $(P).erl
 	$(ERL) -noshell -run $(P) start -run init stop
 
@@ -23,7 +23,7 @@ last: $(LAST)
 
 # Compile and execute each program
 $(PROGRAMS): %: %.erl
-	@echo "\e[32mCompiling and executing:\e[0m \e[1m$<\e[0m"
+	@echo "\033[32mCompiling and executing:\033[0m \033[1m$<\033[0m"
 	$(ERLC) $(ERLFLAGS) $<
 	$(ERL) -noshell -run $@ start -run init stop
 
