@@ -1,0 +1,6 @@
+L1 = [fun(X)-> X*N end||N<-lists:seq(1,7)].
+ring:start(7,L1).
+ring:send_message(1).
+ring:send_message(1,10).
+
+timer:sleep(10000).
