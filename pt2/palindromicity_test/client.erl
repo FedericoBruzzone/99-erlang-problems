@@ -6,23 +6,23 @@
   do_reverse/1
 ]).
 
-start() -> 
+start() ->
   {ok, Hostname} = inet:gethostname(),
   ServerNode = list_to_atom("server@" ++ Hostname),
   MM1Node = list_to_atom("mm1@" ++ Hostname),
-  MM2Node = list_to_atom("mm2@" ++ Hostname), 
+  MM2Node = list_to_atom("mm2@" ++ Hostname),
   Server = spawn(ServerNode, server, loop, []),
   MM1 = spawn(MM1Node, mm, loop, [1, Server]),
   MM2 = spawn(MM2Node, mm, loop, [2, Server]),
   Client = spawn(fun() -> loop(MM1, MM2) end),
   register(client, Client).
 
-loop(MM1, MM2) -> 
-  group_leader(whereis(user), self()), link(MM1), link(MM2), 
+loop(MM1, MM2) ->
+  group_leader(whereis(user), self()), link(MM1), link(MM2),
   io:format("*** LOG: ~p ~p~n", [MM1, MM2]),
   %{mm, MM1Node} ! hello,
   %{mm, MM2Node} ! hello,
-  receive 
+  receive
     {reverse, S} ->
       io:format("*** LOG: Receive ~p~n", [S]),
       {Left, Right} = split_string(S),
