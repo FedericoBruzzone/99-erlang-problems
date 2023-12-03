@@ -1,22 +1,23 @@
 -module(generator).
 
--export([create_slave/3]).
+-export([start/3]).
 
-create_slave(X, N, M) ->
-  L = create_list(trunc(math:pow(M, N)),
+start(X, M, Max) ->
+  io:format("*** LOG: Start with ~p ~p ~p~n", [X, M, Max]),
+  L = create_list(Max,
                   lists:seq(1, M),
                   lists:seq(1, M),
                   trunc(math:pow(M, X)),
                   []),
-  slave_loop(L).
+  loop(X, L).
 
-
-slave_loop([]) -> slave_loop_end;
-slave_loop([H | T]) ->
+loop(_, []) -> end_list;
+loop(X, [H | T]) -> 
   receive
-    {perm, From, I} -> From ! {perm_res, I, H}
+    {get_next, E, Master} -> Master ! {res, E, H, X}; 
+    Any -> io:format("*** LOG Gen: Error with ~p~n", [Any]) 
   end,
-  slave_loop(T).
+  loop(X, T).
 
 create_list(0, _, _, _, Acc) ->
   Acc;
@@ -24,3 +25,4 @@ create_list(Len, E, [], R, Acc) ->
   create_list(Len, E, E, R, Acc);
 create_list(Len, E, [Elem | T], R, Acc) ->
   create_list(Len - R, E, T, R, Acc ++ lists:duplicate(R, Elem)).
+
